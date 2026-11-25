@@ -44,5 +44,5 @@ jobs:
             $peak = [Math]::Max([int64]$peak, [int64]$p.PeakWorkingSet64)
           }
           Write-Host "Piekwerkset (bytes): $peak"
+          if (Test-Path $report) { Get-Content $report }
           if (!$p.HasExited -or $p.ExitCode -ne 0) { throw "Acceptatietest mislukt" }
-          Get-Content $report
