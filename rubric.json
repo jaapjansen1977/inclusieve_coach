@@ -1,0 +1,11 @@
+{
+  "versie": "0.1",
+  "status": "Voorlopige demonstratiecriteria",
+  "voorkeur": "\\b(liever|het liefst|mijn voorkeur|prettig|te snel|te druk|vergeet ik de helft|wil graag)\\b",
+  "onderwerpen": ["op papier|opschrijven|schrijf|schriftelijk", "één voor één|een voor een|één tegelijk", "rustig|langzamer", "aanraken|aanraking", "voordoen|voordoet"],
+  "criteria": [
+    {"id":"verkennen","titel":"Verkent de therapeut een behoefte of voorkeur?","patroon":"hoe (wil|wilt|krijg|ontvang)|wat (werkt|vind|vindt|helpt)|welke (vorm|manier)|heb je een voorkeur","observatie":"De therapeut vraagt naar een voorkeur. De cliënt noemt vervolgens wat voor diegene speelt.","suggestie":"Welke woorden van de cliënt kun je gebruiken om de voorkeur verder te verkennen?"},
+    {"id":"reageren","titel":"Hoe reageert de therapeut op een voorkeur, grens of belemmering?","patroon":"(dan |zullen we |kan ik |zal ik ).*(schrij|papier|rustig|langza|voordoen|tegelijk|stoppen)|dan schrijven","observatie":"Na de uitspraak van de cliënt stelt de therapeut een aanpassing voor.","suggestie":"Hoe kun je nagaan welke vorm voor deze cliënt prettig werkt?"},
+    {"id":"afspreken","titel":"Komt een besproken voorkeur terug in een concrete afspraak?","patroon":"(spreken we af|afgesproken|voor thuis|thuisprogramma|bij het onderzoek|bij de behandeling)","observatie":"De therapeut noemt de eerder uitgesproken voorkeur opnieuw bij een concrete vervolgstap.","suggestie":"Hoe kun je bij het volgende contact nagaan hoe de afspraak heeft uitgepakt?"}
+  ]
+}
