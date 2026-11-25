@@ -13,6 +13,9 @@ UninstallDisplayIcon={app}\InclusieveCoach.exe
 [Files]
 Source: "dist\InclusieveCoach\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 Source: "README.md"; DestDir: "{app}"
+Source: "tests\audio\*.flac"; DestDir: "{app}\Voorbeelden"
+
+Source: "tests\*.json"; DestDir: "{app}\Voorbeelden"
 
 [Icons]
 Name: "{userprograms}\Inclusieve Coach"; Filename: "{app}\InclusieveCoach.exe"

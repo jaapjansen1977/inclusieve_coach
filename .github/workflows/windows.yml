@@ -4,6 +4,7 @@ permissions:
   contents: read
 jobs:
   build:
+    timeout-minutes: 20
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -31,4 +32,16 @@ jobs:
         shell: pwsh
         run: |
           ./tests/prepare-models.ps1
-          python -m tests.accept "$env:LOCALAPPDATA/InclusieveCoach/modellen"
+          $models = "$env:LOCALAPPDATA/InclusieveCoach/modellen"
+          $app = "$env:LOCALAPPDATA/Programs/InclusieveCoach/InclusieveCoach.exe"
+          $report = "$env:RUNNER_TEMP/metingen.txt"
+          $p = Start-Process $app -ArgumentList '--test-fictieve-scenarios',('"' + $models + '"'),('"' + $report + '"') -PassThru
+          $peak = 0
+          $timer = [Diagnostics.Stopwatch]::StartNew()
+          while (!$p.WaitForExit(200) -and $timer.Elapsed.TotalSeconds -lt 180) {
+            $p.Refresh()
+            $peak = [Math]::Max([int64]$peak, [int64]$p.PeakWorkingSet64)
+          }
+          Write-Host "Piekwerkset (bytes): $peak"
+          if (!$p.HasExited -or $p.ExitCode -ne 0) { throw "Acceptatietest mislukt" }
+          Get-Content $report

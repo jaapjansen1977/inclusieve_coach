@@ -3,6 +3,7 @@ import gc
 import io
 import os
 import queue
+import sys
 import threading
 import time
 import tkinter as tk
@@ -70,7 +71,7 @@ class Coach:
     def load(self):
         if not self.ready():
             return
-        path = filedialog.askopenfilename(filetypes=[("WAV", "*.wav")])
+        path = filedialog.askopenfilename(filetypes=[("WAV", "*.wav"), ("Fictieve FLAC-testopnamen", "*.flac")])
         if not path:
             return
         try:
@@ -268,6 +269,13 @@ class Coach:
 
 
 if __name__ == "__main__":
+    if len(sys.argv) == 4 and sys.argv[1] == "--test-fictieve-scenarios":
+        from tests.accept import run
+        from unittest.mock import patch
+        with patch("tkinter.messagebox.showwarning", side_effect=RuntimeError("Testwaarschuwing")):
+            metrics = run(Path(sys.argv[2]), Path(sys.executable).parent / "Voorbeelden")
+        Path(sys.argv[3]).write_text("\n".join(metrics), encoding="utf8")
+        sys.exit(0)
     root = tk.Tk()
     Coach(root)
     root.mainloop()
