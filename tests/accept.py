@@ -30,6 +30,11 @@ def run(models, folder):
             metrics.append(app.stats)
             # Grenzen van de afzonderlijk gesynthetiseerde zinnen, inclusief slotstilte.
             bounds = json.loads((folder/"bounds.json").read_text())[n-1]
+            if n == 1:
+                assert len(app.turns) == len(script)
+                mapping = {t.speaker:role for t,(role,_) in zip(app.turns,script)}
+                assert set(mapping) == {"A","B"} and len(set(mapping.values())) == 2
+                assert all(mapping[t.speaker] == role for t,(role,_) in zip(app.turns,script))
             for t in app.turns:
                 hits = [i for i,(a,b,_) in enumerate(bounds) if a <= (t.start+t.end)//2 <= b]
                 assert len(hits)==1
@@ -42,13 +47,25 @@ def run(models, folder):
                     with patch("coach.simpledialog.askstring",return_value=line):
                         app.edit(t)
             app.feedback()
+            def descendants(widget):
+                for child in widget.winfo_children():
+                    yield child
+                    yield from descendants(child)
+            widgets = list(descendants(app.body))
+            buttons = [w for w in widgets if w.winfo_class()=="TButton" and w.cget("text").startswith("▶")]
+            unknowns = [w for w in widgets if w.winfo_class()=="TLabel" and w.cget("text")=="Niet te beoordelen uit dit gesprek"]
+            assert len(unknowns) == (0 if n==1 else 3)
+            assert len(buttons) == (6 if n==1 else 0)
             expected = [[1,2],[2,3],[2,5]] if n==1 else [[],[],[]]
             for rule,ids in zip(RUBRIC["criteria"],expected):
                 assert evidence(app.turns,rule,RUBRIC)==ids
                 for t in references(app.turns,ids) if ids else []:
                     assert (t.speaker,t.text)==tuple(script[t.id-1])
                     with patch("coach.sd.play") as output:
-                        app.play(t)
+                        button = buttons.pop(0)
+                        assert f"{t.speaker} · beurt {t.id} · {t.start/RATE:.2f}–{t.end/RATE:.2f}" in button.cget("text")
+                        assert any(w.winfo_class()=="TLabel" and w.cget("text")==f"“{t.text}”" for w in button.master.winfo_children())
+                        button.invoke()
                         samples, hz = output.call_args.args
                         assert hz==rate and (samples==pcm[t.start:t.end]).all()
             app.reset()

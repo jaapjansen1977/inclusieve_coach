@@ -34,6 +34,7 @@ jobs:
           ./tests/prepare-models.ps1
           $models = "$env:LOCALAPPDATA/InclusieveCoach/modellen"
           $app = "$env:LOCALAPPDATA/Programs/InclusieveCoach/InclusieveCoach.exe"
+          New-NetFirewallRule -DisplayName "Coach offline acceptatie" -Direction Outbound -Program $app.Replace('/','\') -Action Block | Out-Null
           $report = "$env:RUNNER_TEMP/metingen.txt"
           $p = Start-Process $app -ArgumentList '--test-fictieve-scenarios',('"' + $models + '"'),('"' + $report + '"') -PassThru
           $peak = 0

@@ -79,7 +79,8 @@ class Coach:
                 state = None
                 out = io.BytesIO()
                 for block in source.blocks(blocksize=65536, dtype="float32", always_2d=True):
-                    mono = (np.clip(block.mean(axis=1), -1, 1)*32767).astype("<i2").tobytes()
+                    scaled = np.rint(block.mean(axis=1) * 32768)
+                    mono = np.clip(scaled, -32768, 32767).astype("<i2").tobytes()
                     data, state = audioop.ratecv(mono, 2, 1, source.samplerate, RATE, state)
                     out.write(data)
                 self.pcm = out.getvalue()
