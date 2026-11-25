@@ -10,7 +10,7 @@ import soundfile as sf
 from coach import Coach
 from engine import RATE, RUBRIC, evidence, references
 
-def run(models, folder):
+def run(models, folder, audio_folder):
     scripts = json.loads((folder/"scenarios.json").read_text(encoding="utf8"))
     metrics = []
     root = tk.Tk()
@@ -18,7 +18,7 @@ def run(models, folder):
     app.model = models
     with tempfile.TemporaryDirectory() as tmp:
         for n, script in enumerate(scripts,1):
-            pcm,rate = sf.read(folder/f"audio/scenario-{n}.flac",dtype="int16")
+            pcm,rate = sf.read(audio_folder/f"scenario-{n}.flac",dtype="int16")
             assert rate == RATE
             path = Path(tmp)/"test.wav"
             sf.write(path,pcm,rate)
@@ -75,4 +75,4 @@ def run(models, folder):
 
 
 if __name__ == "__main__":
-    print(run(Path(sys.argv[1]),Path(__file__).parent))
+    print(run(Path(sys.argv[1]),Path(__file__).parent,Path(__file__).parent/"audio"))

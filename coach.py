@@ -277,7 +277,8 @@ if __name__ == "__main__":
             from tests.accept import run
             from unittest.mock import patch
             with patch("tkinter.messagebox.showwarning", side_effect=RuntimeError("Testwaarschuwing")):
-                metrics = run(Path(sys.argv[2]), Path(sys.executable).parent / "Voorbeelden")
+                examples = Path(sys.executable).parent / "Voorbeelden"
+                metrics = run(Path(sys.argv[2]), examples, examples)
         except Exception as error:
             locations = [f"{Path(f.filename).name} {f.lineno}" for f in traceback.extract_tb(error.__traceback__)]
             report.write_text(type(error).__name__ + " " + " / ".join(locations), encoding="utf8")
